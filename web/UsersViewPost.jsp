@@ -17,8 +17,6 @@
         double price=0;
 
 %>
-
-%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -44,6 +42,7 @@
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="/homepage/assets/css/responsive.css">
     <link href="https://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -53,7 +52,6 @@
 <body>
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Handymen Connect</a>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link" href='<%=response.encodeURL("LogoutServlet?userType=customer")%>'>Sign out</a>
@@ -93,91 +91,6 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h4 class="h4">View service / product</h4>
             </div>
-            <div class="w-100 container-fluid row" style="margin: auto;" id="item_desc">
-                <div class="col-2"></div>
-                <%
-                    if(servicesList!=null){
-                        for(int i=0;i<servicesList.size();i++){
-                            post_date=servicesList.get(i).getPost_date();
-                            post_id=servicesList.get(i).getPost_id();
-                            post_name=servicesList.get(i).getName();
-                            descr=servicesList.get(i).getDescription();
-                            image_url=servicesList.get(i).getImage_url();
-                            price=servicesList.get(i).getPrice();
-                            category=servicesList.get(i).getCategory();
-                            h_id=servicesList.get(i).getH_id();
-                            h_name=servicesList.get(i).getH_name();
-                %>
-                <div class="responsive col-4">
-                    <div class="gallery">
-                        <a href="UserServlet?post_id=<%=servicesList.get(i).getPost_id()%>">
-                            <img src="/resources/Uploads/<%=servicesList.get(i).getImage_url()%>" alt="Forest" width="600" height="400">
-                        </a>
-                    </div>
-                </div>
-                <%
-                        }
-                    }else{
-                        out.println("Empty");
-                    }
-                %>
-
-                <div class="container-fluid col-6">
-                    <ul class="list-group">
-                        <li class="list-group-item"><h3><span></span>&nbsp;<%=post_name%></h3></li>
-                        <li class="list-group-item"><span class="badge badge-pill badge-danger">Price:</span>&nbsp;Kes.&nbsp;<%=price%></li>
-                        <li class="list-group-item"><span class="badge badge-pill badge-secondary">Service / Product details</span>&nbsp;<br/><%=descr%></li>
-                        <li class="list-group-item"><span class="badge badge-pill badge-secondary">Date posted:</span>&nbsp;<%=post_date%></li>
-                    </ul>
-
-                    <div class="container-fluid" style="padding: 10px;margin-top: 5px;">
-                        <a href="#" class="btn btn-outline-info" id="talk">Talk to handyman&nbsp;<span class="fa fa-comments"></span></a>
-                    </div>
-                </div>
-            </div>
-            <div id="chat" class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between" style="border-bottom: 1px solid rgba(58,53,255,0.88);"><h4>Chat&nbsp;<span class="fa fa-comments"></span></h4><span id="show_chat" class="fa fa-chevron-up"></span></div>
-                    <div id="chat_content">
-                        <div class="card" style="margin-bottom: 55px;">
-                            <div id="messages" class="card-body">
-                                <ul class="list-group">
-                                    <%
-                                        if(handyManMessagingList!=null){
-                                            for(int i=0;i<handyManMessagingList.size();i++){
-                                                if(handyManMessagingList.get(i).getSender_type().equalsIgnoreCase("customer")){
-                                    %>
-                                    <li class="list-group-item"><div  style="border: 1px solid #6e6e6e; float: right; text-align: right;"><%=handyManMessagingList.get(i).getMessage()%></div></li>
-                                    <%
-                                    }else{
-                                    %>
-                                    <li class="list-group-item"><div  style="border: 1px solid #6e6e6e; float: left; text-align: left;"><%=handyManMessagingList.get(i).getMessage()%></div></li>
-                                    <%
-                                                }
-                                            }
-                                        }else{
-                                            out.println("No messages!");
-                                        }
-                                    %>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card" style="bottom: 0;position: fixed;">
-                            <div class="card-body">
-                                <form class="form-inline" id="message_form" action="UserServlet" method="get">
-                                    <input type="hidden" name="h_id" value="<%=h_id%>"/>
-                                    <input type="hidden" name="h_name" value="<%=h_name%>"/>
-                                    <div class="form-group mb-2">
-                                        <input type="text" class="form-control" id="message" name="message" required/>
-                                    </div>
-                                    <input type="hidden" name="send_msg" value="send_msg"/>
-                                    <button type="submit" class="btn btn-primary mb-2"><span class="fa fa-send"></span></button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
 </div>
@@ -189,6 +102,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     feather.replace()
 </script>
@@ -221,19 +135,17 @@
         var c=0;
         $('#message_form').on('submit',function (e) {
             c++;
-            //e.preventDefault();
+            e.preventDefault();
             var u_=$(this).attr('action');
             var m=$(this).attr('method');
-            alert($(this).serialize());
             $.ajax({
                 url: u_,
                 method: m,
                 data: $(this).serialize(),
                 success: function(result){
-                    alert(result);
                     $('#message').val('');
-                    $('#messages ul').append('<li class="list-group-item" id="new_item'+c+'"><div style="border: 1px solid #6e6e6e; float: right; text-align: right;">'+result+'</div></li>');
-                    $('#new_item'+c).focus();
+                    $('#messages ul').append('<li class="list-group-item" id="new_item"><div style="border: 1px solid #6e6e6e; float: right; text-align: right;">'+result+'</div></li>');
+                    $('#new_item').focus();
                 },
                 error: function () {
                     alert('error occured!');

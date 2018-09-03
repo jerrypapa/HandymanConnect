@@ -71,12 +71,6 @@
                             View Handymen
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="users"></span>
-                            View Carpenters
-                        </a>
-                    </li>
                 </ul>
             </div>
         </nav>
@@ -96,13 +90,63 @@
                 </div>-->
             </div>
             <div class="container-fluid w-100">
-                <ul class="list-group" id="details">
-                    <li class="list-group-item"><span>Firstname:</span>&nbsp;<%=admin.getFirstName()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_fname_div">Change</a></li>
-                    <li class="list-group-item"><span>Lastname:</span>&nbsp;<%=admin.getLastName()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_lname_div">Change</a></li>
-                    <li class="list-group-item"><span>E-mail address:</span>&nbsp;<%=admin.getEmail()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_email_div">Change</a></li>
-                    <li class="list-group-item"><a href="#" class="btn btn-outline-info" data-toggle="modal" data-target="#change_password_div">Change password</a></li>
-                    <li class="list-group-item"><span>Phone No.:</span>&nbsp;<%=admin.getPhoneNo()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_phone_div">Change</a></li>
-                </ul>
+                <form action="AdminServlet" method="get">
+                    <ul class="list-group" id="details">
+                        <li class="list-group-item">
+                            <div class="col-6">
+                                <span>Firstname:</span>&nbsp;<%=admin.getFirstName()%>&nbsp;
+                            </div>
+                            <div class="col-6">
+                                <input type="text" name="new_fname" class="form-control form-control-sm" />
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Lastname:</span>&nbsp;<%=admin.getLastName()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_lname" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>E-mail address:</span>&nbsp;<%=admin.getEmail()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_email" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="password" name="old_password" class="form-control form-control-sm" placeholder="Old password"  />
+                                </div>
+                                <div class="col-6">
+                                    <input type="password" name="new_password" class="form-control form-control-sm" placeholder="New password"  />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Phone No.:</span>&nbsp;<%=admin.getPhoneNo()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_phone" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <input type="hidden" name="edit_profile" value="edit_profile" />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-info">Update changes</button>
+                    </div>
+                </form>
             </div>
         </main>
     </div>

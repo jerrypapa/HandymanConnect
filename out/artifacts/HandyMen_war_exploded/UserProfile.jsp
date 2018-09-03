@@ -80,16 +80,91 @@
 
             <h2>Section title</h2>
             <div class="container-fluid w-100">
-                <ul class="list-group" id="details">
-                    <li class="list-group-item"><span>Username:</span>&nbsp;<%=customer.getUsername()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_username_div">Change</a></li>
-                    <li class="list-group-item"><span>Firstname:</span>&nbsp;<%=customer.getFirstName()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_fname_div">Change</a></li>
-                    <li class="list-group-item"><span>Lastname:</span>&nbsp;<%=customer.getLastName()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_lname_div">Change</a></li>
-                    <li class="list-group-item"><span>E-mail address:</span>&nbsp;<%=customer.getEmail()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_email_div">Change</a></li>
-                    <li class="list-group-item"><a href="#" class="btn btn-outline-info" data-toggle="modal" data-target="#change_password_div">Change password</a></li>
-                    <li class="list-group-item"><span>Phone No.:</span>&nbsp;<%=customer.getPhoneNo()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_phone_div">Change</a></li>
-                    <li class="list-group-item"><span>Gender:</span>&nbsp;<%=customer.getGender()%>&nbsp;<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#change_gender_div">Change</a></li>
-                    <li class="list-group-item"><span>Date registered:</span>&nbsp;<%=customer.getDateRegistered()%></li>
-                </ul>
+                <form action="UserServlet" method="get">
+                    <ul class="list-group" id="details">
+                        <div class="col-6"></div>
+                        <div class="col-6"></div>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Username:</span>&nbsp;<%=customer.getUsername()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_username" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Firstname:</span>&nbsp;<%=customer.getFirstName()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_fname" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Lastname:</span>&nbsp;<%=customer.getLastName()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_lname" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>E-mail address:</span>&nbsp;<%=customer.getEmail()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_email" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="password" name="old_password" class="form-control form-control-sm" placeholder="Old password" />
+                                </div>
+                                <div class="col-6">
+                                    <input type="password" name="new_password" class="form-control form-control-sm" placeholder="New password" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Phone No.:</span>&nbsp;<%=customer.getPhoneNo()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="new_phone" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Gender:</span>&nbsp;<%=customer.getGender()%>&nbsp;
+                                </div>
+                                <div class="col-6">
+                                    <select name="new_gender" class="form-control">
+                                        <option disabled></option>
+                                        <option>male</option>
+                                        <option>female</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item"><span>Date registered:</span>&nbsp;<%=customer.getDateRegistered()%></li>
+                    </ul>
+                    <input type="hidden" name="edit_profile" value="edit_profile" />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-info">Update changes</button>
+                    </div>
+                </form>
             </div>
         </main>
     </div>

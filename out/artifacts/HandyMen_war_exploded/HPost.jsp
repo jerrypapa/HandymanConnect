@@ -75,6 +75,24 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="HandymanServlet?PendingJobs=ok">
+                            <span data-feather="file"></span>
+                            Pending jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="HandymanServlet?ProgressJobs=ok">
+                            <span data-feather="file"></span>
+                            In-progress jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="HandymanServlet?CompleteJobs=ok">
+                            <span data-feather="file"></span>
+                            Finished jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="HandymanServlet?Messages=ok">
                             <span data-feather="file"></span>
                             Messages

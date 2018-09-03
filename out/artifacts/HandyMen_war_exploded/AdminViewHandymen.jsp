@@ -74,7 +74,7 @@
                             View Handymen
                         </a>
                     </li>
-                    
+
                 </ul>
             </div>
         </nav>

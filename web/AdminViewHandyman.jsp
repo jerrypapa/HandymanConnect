@@ -11,6 +11,8 @@
     }else if(admin!=null){
         Handymen handymen=(Handymen)request.getAttribute("handyman");
         List<Posts> postsList=(List<Posts>)request.getAttribute("postsList");
+        double handyman_ratings=0;
+        handyman_ratings=(Double)request.getAttribute("handyman_ratings");
 
 %>
 <!doctype html>
@@ -39,7 +41,6 @@
 <body>
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Admin Dashboard</a>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link" href='<%=response.encodeURL("LogoutServlet?userType=admin")%>'>Sign out</a>
@@ -74,12 +75,6 @@
                         <a class="nav-link active" href="AdminServlet?viewhandymen=true">
                             <span data-feather="shopping-cart"></span>
                             View Handymen
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="users"></span>
-                            View Carpenters
                         </a>
                     </li>
                 </ul>
@@ -150,6 +145,16 @@
                                 <b>Date registered:</b>&nbsp;<%=handymen.getDateRegistered()%>
                             </div>
                         </li>
+                        <li class="list-group-item">
+                            <div class="container">
+                                <b>Ratings:</b>&nbsp;<%=handyman_ratings%>&nbsp;/&nbsp;5.0
+                            </div>
+                        </li>
+                        <a href="AdminServlet?HandymanJobs=<%=handymen.getHandymanid()%>" class="list-group-item list-group-item-action active">
+                            <div class="container">
+                                View&nbsp;<%=handymen.getUsername()%>&nbsp;jobs
+                            </div>
+                        </a>
                         <li class="list-group-item">
                             <div class="container">
                                 <b>Service(s):</b>&nbsp;<br/>

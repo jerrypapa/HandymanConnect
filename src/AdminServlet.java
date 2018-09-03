@@ -2,6 +2,7 @@ import Admin.Handymen;
 import Admin.Customers;
 import Handyman.CustomerMessaging;
 import Handyman.Posts;
+import Jobs.Jobs;
 import Login.Admin;
 import Messages.AdminCustomer;
 import Messages.AdminHandyman;
@@ -50,6 +51,7 @@ public class AdminServlet extends HttpServlet {
     List<Handymen> handymenList;
     List<Customers> customersList;
     List<Login.Handymen> handymenSearchList;
+    List<Jobs> jobsList;
     JsonArray jsonArray;
     Gson gson;
 
@@ -99,6 +101,7 @@ public class AdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         viewHandymenList=new ArrayList<>();
         postsList=new ArrayList<>();
+        jobsList=new ArrayList<>();
         Enumeration parameterNames=request.getParameterNames();
         String msgParameter="";
         String msgParameterValue="";
@@ -107,6 +110,10 @@ public class AdminServlet extends HttpServlet {
         admin=(Admin)httpSession.getAttribute("logged_admin");
         String change_username="",change_fname="",change_lname="",change_password="",change_email="",change_gender="",change_location="",current_password="",searchhandyman="";
         int change_phone=0;
+
+        String new_fname="",new_lname="",old_password="",new_password="",new_gender="",new_location="",new_email="",new_username="",edit_profile="",HandymanJobs="",HandymanJob="";
+        int new_phone=0,h_id=0;
+
         if(parameterNames.hasMoreElements()==true){
             while (parameterNames.hasMoreElements()){
                 msgParameter=(String)parameterNames.nextElement();
@@ -114,6 +121,48 @@ public class AdminServlet extends HttpServlet {
                 if(msgParameter.equalsIgnoreCase("change_username")){
                     change_username=msgParameterValue;
                     //out.println("Price: "+price);
+                }else if(msgParameter.equalsIgnoreCase("old_password")){
+                    old_password=msgParameterValue;
+                    //out.println("Price: "+old_password);
+                }else if(msgParameter.equalsIgnoreCase("edit_profile")){
+                    edit_profile=msgParameterValue;
+                    //out.println("Price: "+edit_profile);
+                }else if(msgParameter.equalsIgnoreCase("new_password")){
+                    new_password=msgParameterValue;
+                    //out.println("Price: "+new_password);
+                }else if(msgParameter.equalsIgnoreCase("h_id")){
+                    h_id=Integer.parseInt(msgParameterValue);
+                    //out.println("Price: "+h_id);
+                }else if(msgParameter.equalsIgnoreCase("HandymanJobs")){
+                    HandymanJobs=msgParameterValue;
+                    //out.println("Price: "+new_phone);
+                }else if(msgParameter.equalsIgnoreCase("HandymanJob")){
+                    HandymanJob=msgParameterValue;
+                    //out.println("Price: "+HandymanJob);
+                }else if(msgParameter.equalsIgnoreCase("new_phone")){
+                    new_phone=Integer.parseInt(msgParameterValue);
+                    //out.println("Price: "+new_phone);
+                }else if(msgParameter.equalsIgnoreCase("new_email")){
+                    new_email=msgParameterValue;
+                    //out.println("Price: "+new_email);
+                }else if(msgParameter.equalsIgnoreCase("new_gender")){
+                    new_gender=msgParameterValue;
+                    //out.println("Price: "+new_gender);
+                }else if(msgParameter.equalsIgnoreCase("old_password")){
+                    old_password=msgParameterValue;
+                    //out.println("Price: "+old_password);
+                }else if(msgParameter.equalsIgnoreCase("new_lname")){
+                    new_lname=msgParameterValue;
+                    //out.println("Price: "+new_lname);
+                }else if(msgParameter.equalsIgnoreCase("new_location")){
+                    new_location=msgParameterValue;
+                    //out.println("Price: "+new_location);
+                }else if(msgParameter.equalsIgnoreCase("new_fname")){
+                    new_fname=msgParameterValue;
+                    //out.println("Price: "+new_fname);
+                }else if(msgParameter.equalsIgnoreCase("new_username")){
+                    new_username=msgParameterValue;
+                    //out.println("Price: "+new_username);
                 }else if(msgParameter.equalsIgnoreCase("change_fname")){
                     change_fname=msgParameterValue;
                     //out.println("Price: "+price);
@@ -171,6 +220,138 @@ public class AdminServlet extends HttpServlet {
                 }
             }else{
                 response.getWriter().write(msgParameterValue);
+            }
+        }else if(msgParameter.equalsIgnoreCase("edit_profile")){
+            String fname="",lname="",email="",location="",gender="",password="",regdate="",soffered="",username="";
+            int phone=0,admin_id=0;
+            CustomerMessaging customerMessaging;
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+                connection=DBConnection.getConnection();
+                statement=connection.createStatement();
+
+                admin_id=admin.getadminid();
+
+                rs=statement.executeQuery("SELECT * FROM Handymen.Admin WHERE adminid='"+admin_id+"'");
+                int count=0;
+
+                while(rs.next()){
+                    admin=new Admin(rs.getInt(5),rs.getString(1),rs.getString(2),rs.getString(7),rs.getString(3),rs.getInt(4),rs.getString(6));
+                    //admin=new Admin(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
+                    count++;
+                }
+
+                if(new_email.equalsIgnoreCase("")){
+                    email=admin.getEmail();
+                }else{
+                    email=new_email;
+                }
+                if(new_fname.equalsIgnoreCase("")){
+                    fname=admin.getFirstName();
+                }else{
+                    fname=new_fname;
+                }
+                if(new_lname.equalsIgnoreCase("")){
+                    lname=admin.getLastName();
+                }else{
+                    lname=new_lname;
+                }
+                if(new_password.equalsIgnoreCase("")){
+                    password=admin.getPassword();
+                }else{
+                    password=new_password;
+                }
+                if(new_phone==0){
+                    phone=admin.getPhoneNo();
+                }else{
+                    phone=new_phone;
+                }
+
+                preparedStatement=connection.prepareStatement("UPDATE Handymen.Admin SET Fname=?,Lname=?,adminid=?,email=?,password=?,phonenumber=? WHERE adminid=?");
+                preparedStatement.setString(1,fname);
+                preparedStatement.setString(2,lname);
+                preparedStatement.setString(3,Integer.toString(admin.getadminid()));
+                preparedStatement.setString(4,email);
+                preparedStatement.setString(5,password);
+                preparedStatement.setString(6,Integer.toString(phone));
+                preparedStatement.setString(7,Integer.toString(admin.getadminid()));
+                int k=0;
+                k=preparedStatement.executeUpdate();
+                //out.println("username: "+k);
+                if(k==1){
+                    rs=statement.executeQuery("SELECT * FROM Handymen.Admin WHERE adminid='"+admin.getadminid()+"'");
+                    while(rs.next()){
+                        admin=new Admin(rs.getInt(5),rs.getString(1),rs.getString(2),rs.getString(7),rs.getString(3),rs.getInt(4),rs.getString(6));
+                        //admin=new Admin(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
+                    }
+
+                    request.setAttribute("admin_details",admin);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/AdminProfile.jsp")).forward(request,response);
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                out.println(e.getMessage());
+            }
+        }else if(msgParameter.equalsIgnoreCase("HandymanJobs")){
+            //out.write("received"+msgParameter+" "+msgParameterValue);
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+                connection=DBConnection.getConnection();
+                statement=connection.createStatement();
+                rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+HandymanJobs+"'");
+                int i=0;
+                while (rs.next()){
+                    i++;
+                    jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                }
+                //out.println(i);
+                i=0;
+                rs=statement.executeQuery("SELECT * FROM Handymen.Handymen WHERE handymanid='"+HandymanJobs+"'");
+                while (rs.next()){
+                    handymen=new Login.Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10),rs.getString(11),rs.getString(12));
+                    i++;
+                    viewHandymenList.add(handymen);
+                    //handymenList.add(new Handymen(rs.getInt(7),rs.getString(8),rs.getString(5)));
+                    //handymen=new Login.Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10),rs.getString(11),rs.getString(12));
+                    //handymenSearchList.add(handymen);
+                }
+                //out.println(i+" "+viewHandymenList.size()+" "+viewHandymenList.get(0).getUsername()+" "+jobsList.size()+" han:"+HandymanJobs);
+                request.setAttribute("handymanJob",jobsList);
+                request.setAttribute("handymanDetails",handymen);
+                request.getServletContext().getRequestDispatcher(response.encodeURL("/AdminViewHandymanJobs.jsp")).forward(request,response);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else if(msgParameter.equalsIgnoreCase("HandymanJob")){
+            //out.write("received"+msgParameter+" "+msgParameterValue);
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+                connection=DBConnection.getConnection();
+                statement=connection.createStatement();
+                rs=statement.executeQuery("SELECT * FROM Jobs WHERE jobid='"+HandymanJob+"'");
+                int i=0;
+                while (rs.next()){
+                    i++;
+                    jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                }
+                //out.println(i);
+                i=0;
+                rs=statement.executeQuery("SELECT * FROM Handymen.Handymen WHERE handymanid='"+h_id+"'");
+                while (rs.next()){
+                    handymen=new Login.Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10),rs.getString(11),rs.getString(12));
+                    i++;
+                    viewHandymenList.add(handymen);
+                    //handymenList.add(new Handymen(rs.getInt(7),rs.getString(8),rs.getString(5)));
+                    //handymen=new Login.Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10),rs.getString(11),rs.getString(12));
+                    //handymenSearchList.add(handymen);
+                }
+                //out.println(i+" "+viewHandymenList.size()+" "+viewHandymenList.get(0).getUsername()+" "+jobsList.size()+" han:"+HandymanJob);
+                request.setAttribute("handymanJob",jobsList);
+                request.setAttribute("handymanDetails",handymen);
+                request.getServletContext().getRequestDispatcher(response.encodeURL("/AdminViewHandymanJob.jsp")).forward(request,response);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }else if(msgParameter.equalsIgnoreCase("searchhandyman")){
             //out.write("received"+searchhandyman);
@@ -540,6 +721,8 @@ public class AdminServlet extends HttpServlet {
 
             }
         }else if(msgParameter.equalsIgnoreCase("viewhandyman")){
+            double ratings=0,avg_rating=0;
+            int count_ratings=0;
             try{
                 Class.forName("com.mysql.jdbc.Driver");
                 connection=DBConnection.getConnection();
@@ -557,8 +740,16 @@ public class AdminServlet extends HttpServlet {
                     i++;
                     postsList.add(new Posts(rs.getInt(3),rs.getInt(4),rs.getDouble(6),rs.getString(1),rs.getString(2),rs.getString(7),rs.getString(5),rs.getString(8),rs.getString(9)));
                 }
+                rs=statement.executeQuery("SELECT * FROM HandymenRatings WHERE handymanid='"+msgParameterValue+"'");
+                while(rs.next()){
+                    count_ratings++;
+                    ratings+=rs.getDouble(7);
+                }
+                avg_rating=ratings/count_ratings;
+
                 request.setAttribute("handyman",handymen);
                 request.setAttribute("postsList",postsList);
+                request.setAttribute("handyman_ratings",avg_rating);
                 request.getServletContext().getRequestDispatcher(response.encodeURL("/AdminViewHandyman.jsp")).forward(request,response);
             }catch (Exception e){
                 e.printStackTrace();

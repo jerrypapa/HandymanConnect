@@ -2,6 +2,7 @@ import Customer.HandyManMessaging;
 import Handyman.AdminMessaging;
 import Handyman.CustomerMessaging;
 import Handyman.Posts;
+import Jobs.Jobs;
 import Login.Admin;
 import Login.Handymen;
 import Messages.AdminCustomer;
@@ -49,6 +50,7 @@ public class HandymanServlet extends HttpServlet {
     List<Handymen> handymenList;
     List<AdminMessaging> adminMessagingList;
     List<CustomerMessaging> customerMessagingList;
+    List<Jobs> jobsList;
     JsonArray jsonArray;
     Gson gson;
 
@@ -104,10 +106,16 @@ public class HandymanServlet extends HttpServlet {
         String change_username="",change_fname="",change_lname="",change_password="",change_email="",change_gender="",change_location="",current_password="",customersendername="",customer_message="",customer_sent_name="";
         int change_phone=0,customerid=0;
 
+        String new_fname="",new_lname="",old_password="",new_password="",new_gender="",new_location="",new_email="",new_username="",edit_profile="";
+        int new_phone=0;
+        String start_job="",complete_job="";
+        int job_id=0;
+
         out=response.getWriter();
         httpSession=request.getSession();
         handymen=(Handymen)httpSession.getAttribute("logged_handyman");
         adminMessagingList=new ArrayList<>();
+        jobsList=new ArrayList<>();
         if(parameterNames.hasMoreElements()==true){
             while (parameterNames.hasMoreElements()){
                 msgParameter=(String)parameterNames.nextElement();
@@ -115,6 +123,49 @@ public class HandymanServlet extends HttpServlet {
                 if(msgParameter.equalsIgnoreCase("category")){
                     category=msgParameterValue;
                     //out.println("Category: "+category);
+                }else if(msgParameter.equalsIgnoreCase("job_id")){
+                    job_id=Integer.parseInt(msgParameterValue);
+                    //out.println("Price: "+job_id);
+                }else if(msgParameter.equalsIgnoreCase("start_job")){
+                    start_job=msgParameterValue;
+                    //out.println("Price: "+start_job);
+                }
+                else if(msgParameter.equalsIgnoreCase("complete_job")){
+                    complete_job=msgParameterValue;
+                    out.println("Price: "+start_job);
+                }else if(msgParameter.equalsIgnoreCase("old_password")){
+                    old_password=msgParameterValue;
+                    //out.println("Price: "+old_password);
+                }else if(msgParameter.equalsIgnoreCase("edit_profile")){
+                    edit_profile=msgParameterValue;
+                    //out.println("Price: "+edit_profile);
+                }else if(msgParameter.equalsIgnoreCase("new_password")){
+                    new_password=msgParameterValue;
+                    //out.println("Price: "+new_password);
+                }else if(msgParameter.equalsIgnoreCase("new_phone")){
+                    new_phone=Integer.parseInt(msgParameterValue);
+                    //out.println("Price: "+new_phone);
+                }else if(msgParameter.equalsIgnoreCase("new_email")){
+                    new_email=msgParameterValue;
+                    //out.println("Price: "+new_email);
+                }else if(msgParameter.equalsIgnoreCase("new_gender")){
+                    new_gender=msgParameterValue;
+                    //out.println("Price: "+new_gender);
+                }else if(msgParameter.equalsIgnoreCase("old_password")){
+                    old_password=msgParameterValue;
+                    //out.println("Price: "+old_password);
+                }else if(msgParameter.equalsIgnoreCase("new_lname")){
+                    new_lname=msgParameterValue;
+                    //out.println("Price: "+new_lname);
+                }else if(msgParameter.equalsIgnoreCase("new_location")){
+                    new_location=msgParameterValue;
+                    //out.println("Price: "+new_location);
+                }else if(msgParameter.equalsIgnoreCase("new_fname")){
+                    new_fname=msgParameterValue;
+                    //out.println("Price: "+new_fname);
+                }else if(msgParameter.equalsIgnoreCase("new_username")){
+                    new_username=msgParameterValue;
+                    //out.println("Price: "+new_username);
                 }else if(msgParameter.equalsIgnoreCase("price")){
                     price=Double.parseDouble(msgParameterValue);
                     //out.println("Price: "+price);
@@ -198,6 +249,252 @@ public class HandymanServlet extends HttpServlet {
                         out.println(e.getMessage());
                     }
 
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("ProgressJobs")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='inprogress'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HProgressJobs.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("ProgressJob")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='inprogress'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HProgressJob.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("CompleteJobs")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='done'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HDoneJobs.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("DoneJob")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='done' AND jobid='"+msgParameterValue+"'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HDoneJob.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("start_job")){
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    preparedStatement=connection.prepareStatement("UPDATE Jobs SET status=? WHERE jobid=?");
+                    preparedStatement.setString(1,start_job);
+                    preparedStatement.setString(2,Integer.toString(job_id));
+                    int b=preparedStatement.executeUpdate();
+                    //out.println(b);
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='inprogress' AND jobid='"+job_id+"'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HProgressJob.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("complete_job")){
+                Date now=new Date();
+                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    preparedStatement=connection.prepareStatement("UPDATE Jobs SET status=?,datefinished=? WHERE jobid=?");
+                    preparedStatement.setString(1,complete_job);
+                    preparedStatement.setString(2,dateFormat.format(now));
+                    preparedStatement.setString(3,Integer.toString(job_id));
+                    int b=preparedStatement.executeUpdate();
+                    //out.println(b);
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='done' AND jobid='"+job_id+"'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HDoneJob.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("PendingJobs")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='pending'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HJobs.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("PendingJob")){
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    rs=statement.executeQuery("SELECT * FROM Jobs WHERE handymanid='"+handymen.getHandymanid()+"' AND status='pending' AND jobid='"+msgParameterValue+"'");
+                    while (rs.next()){
+                        jobsList.add(new Jobs(rs.getString(2),rs.getString(3),rs.getString(8),rs.getString(4),rs.getString(6),rs.getString(9),rs.getInt(5),rs.getInt(7),rs.getInt(11),rs.getInt(1)));
+                    }
+                    request.setAttribute("jobsList",jobsList);
+                    request.getServletContext().getRequestDispatcher(response.encodeURL("/HJob.jsp")).forward(request,response);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
+                }
+            }
+
+            if(msgParameter.equalsIgnoreCase("edit_profile")){
+                String fname="",lname="",email="",location="",gender="",password="",regdate="",soffered="",username="";
+                int phone=0,handyman_id=0;
+                CustomerMessaging customerMessaging;
+
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    connection=DBConnection.getConnection();
+                    statement=connection.createStatement();
+
+                    handyman_id=handymen.getHandymanid();
+
+                    rs=statement.executeQuery("SELECT * FROM Handymen.Handymen WHERE handymanid='"+handyman_id+"'");
+                    while (rs.next()){
+                        handymen=new Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10),rs.getString(11));
+                    }
+
+                    if(new_email.equalsIgnoreCase("")){
+                        email=handymen.getEmail();
+                    }else{
+                        email=new_email;
+                    }
+                    if(new_fname.equalsIgnoreCase("")){
+                        fname=handymen.getFirstName();
+                    }else{
+                        fname=new_fname;
+                    }
+                    if(new_gender.equalsIgnoreCase("")){
+                        gender=handymen.getGender();
+                    }else{
+                        gender=new_gender;
+                    }
+                    if(new_lname.equalsIgnoreCase("")){
+                        lname=handymen.getLastName();
+                    }else{
+                        lname=new_lname;
+                    }
+                    if(new_location.equalsIgnoreCase("")){
+                        location=handymen.getLocation();
+                    }else{
+                        location=new_location;
+                    }
+                    if(new_password.equalsIgnoreCase("")){
+                        password=handymen.getPassword();
+                    }else{
+                        password=new_password;
+                    }
+                    if(new_phone==0){
+                        phone=handymen.getPhoneNo();
+                    }else{
+                        phone=new_phone;
+                    }
+                    if(new_username.equalsIgnoreCase("")){
+                        username=handymen.getUsername();
+                    }else{
+                        username=new_username;
+                    }
+
+                    preparedStatement=connection.prepareStatement("UPDATE Handymen.Handymen SET Fname=?,Lname=?,username=?,handymanid=?,email=?,location=?,phoneno=?,password=?,gender=?,Regdate=?,soffered=? WHERE handymanid=?");
+                    preparedStatement.setString(1,fname);
+                    preparedStatement.setString(2,lname);
+                    preparedStatement.setString(3,username);
+                    preparedStatement.setString(4,Integer.toString(handymen.getHandymanid()));
+                    preparedStatement.setString(5,email);
+                    preparedStatement.setString(6,location);
+                    preparedStatement.setString(7,Integer.toString(phone));
+                    preparedStatement.setString(8,password);
+                    preparedStatement.setString(9,gender);
+                    preparedStatement.setString(10,handymen.getDateRegistered());
+                    preparedStatement.setString(11,handymen.getSoffered());
+                    preparedStatement.setString(12,Integer.toString(handyman_id));
+                    int k=0;
+                    k=preparedStatement.executeUpdate();
+                    //out.println("username: "+k);
+                    if(k==1){
+                        rs=statement.executeQuery("SELECT * FROM Handymen WHERE handymanid='"+handymen.getHandymanid()+"'");
+                        while (rs.next()){
+                            handymen=new Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10));
+                        }
+                        request.setAttribute("handyman_details",handymen);
+                        request.getServletContext().getRequestDispatcher(response.encodeURL("/HProfile.jsp")).forward(request,response);
+
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    out.println(e.getMessage());
                 }
             }
 
@@ -1115,6 +1412,8 @@ public class HandymanServlet extends HttpServlet {
 
         if(msgParameter.equalsIgnoreCase("Profile")){
             List<Posts> postsList=new ArrayList<>();
+            double ratings=0,avg_rating=0;
+            int count_ratings=0;
             try{
                 Class.forName("com.mysql.jdbc.Driver");
                 connection=DBConnection.getConnection();
@@ -1123,7 +1422,19 @@ public class HandymanServlet extends HttpServlet {
                 while (rs.next()){
                     handymen=new Handymen(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(4),rs.getString(3),rs.getInt(5),rs.getString(9),rs.getString(6),rs.getString(8),rs.getString(10));
                 }
+
+                rs=statement.executeQuery("SELECT * FROM HandymenRatings WHERE handymanid='"+handymen.getHandymanid()+"'");
+
+                while(rs.next()){
+                    count_ratings++;
+                    ratings+=rs.getDouble(7);
+                }
+
+                if(count_ratings>0){
+                    avg_rating=ratings/count_ratings;
+                }
                 request.setAttribute("handyman_details",handymen);
+                request.setAttribute("handyman_ratings",avg_rating);
                 request.getServletContext().getRequestDispatcher(response.encodeURL("/HProfile.jsp")).forward(request,response);
             }catch (Exception e){
                 out.println(e.getMessage());
